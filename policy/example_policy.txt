@@ -1,0 +1,33 @@
+
+- Enable ACLs on all the servers. 
+cp /vagrant/policy/acl.json /etc/consul.d
+systemctl restart consul
+
+- Create the initial bootstrap token. 
+consul acl bootstrap  > /vagrant/policy/master-token.txt
+consul members -token "cbd1e848-040f-ef49-c615-d579d2388ada"
+export CONSUL_HTTP_TOKEN=cbd1e848-040f-ef49-c615-d579d2388ada
+
+- Create the agent policy with file. 
+consul acl policy create  -name "agent-token" -description "Agent Token Policy" -rules @/vagrant/policy/agent-policy.hcl
+
+- Create the agent token.
+consul acl token create -description "Agent Token" -policy-name "agent-token" > /vagrant/policy/agent-token.txt
+
+- Create the service policy without file. 
+consul acl policy create -name "service" \
+-description "Necessary permissions for service" \
+-rules 'key_prefix "" { policy = "write" } node_prefix "" { policy = "write" } service_prefix "" { policy = "write" }'
+
+- Create the agent token.
+consul acl token create -description "Web Service" -policy-name "service" > /vagrant/policy/service-token.txt
+
+- Apply the new token to the servers. // change the token in file
+ cp /vagrant/policy/agent-token.json /etc/consul.d/acl.json
+systemctl restart consul
+curl http://127.0.0.1:8500/v1/catalog/nodes -H 'x-consul-token: cbd1e848-040f-ef49-c615-d579d2388ada' | jq
+
+- Enable ACLs on the clients and apply the agent token. 
+ cp /vagrant/policy/agent-token.json /etc/consul.d
+systemctl restart consul
+

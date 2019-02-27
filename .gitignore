@@ -1,0 +1,12 @@
+.vagrant/
+pkg/
+consul_logs/
+test.sh
+token/
+vault_logs
+CA_cert.crt
+intermediate.cert.pem
+pki_intermediate.csr
+policy/agent-token.txt
+policy/master-token.txt
+policy/snapshot-token.txt
