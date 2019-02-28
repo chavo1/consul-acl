@@ -7,7 +7,7 @@ CONSUL_VERSION = '1.4.2'
 CONSUL_TEMPLATE_VERSION = '0.19.5'
 ENVCONSUL_VERSION = '0.7.3'
 DOMAIN = 'consul'
-TLS_ENABLE = false
+TLS_ENABLE = true
 datacenters = {
   "dc1" => { :ip_range => "192.168.56" }
 }
@@ -50,7 +50,7 @@ Vagrant.configure(2) do |config|
                                                                                           "DOMAIN" => DOMAIN, 
                                                                                           "CONSUL_VERSION" => CONSUL_VERSION, 
                                                                                           "SERVER_COUNT" => SERVER_COUNT}
-        server.vm.provision "shell",inline: "cd /vagrant ; bash policy/acl.sh"
+        server.vm.provision "shell",inline: "cd /vagrant ; bash policy/acl.sh", env: {"TLS_ENABLE" => TLS_ENABLE}
 
       end
     end
@@ -66,7 +66,7 @@ Vagrant.configure(2) do |config|
         client.vm.provision "shell",inline: "cd /vagrant ; bash scripts/consul-template.sh", env: {"CONSUL_TEMPLATE_VERSION" => CONSUL_TEMPLATE_VERSION}
         client.vm.provision "shell",inline: "cd /vagrant ; bash scripts/kv.sh", env: {"TLS_ENABLE" => TLS_ENABLE}
         client.vm.provision "shell",inline: "cd /vagrant ; bash scripts/nginx.sh", env: {"TLS_ENABLE" => TLS_ENABLE}
-        client.vm.provision "shell",inline: "cd /vagrant ; bash policy/acl.sh"
+        client.vm.provision "shell",inline: "cd /vagrant ; bash policy/acl.sh", env: {"TLS_ENABLE" => TLS_ENABLE}
         client.vm.provision "shell",inline: "cd /vagrant ; bash scripts/dns.sh"
       
       end

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -x
 TLS_ENABLE=${TLS_ENABLE}
 HOST=$(hostname)
