@@ -22,7 +22,7 @@ echo $nginx > /var/www/html/index.nginx-debian.html
 elif  which consul-template >/dev/null; then
     if [ "$TLS_ENABLE" = true ] ; then
         consul-template -consul-ssl -consul-ssl-ca-cert=/etc/consul.d/ssl/consul-agent-ca.pem -consul-addr=127.0.0.1:8501 \
-         -log-level=trace -config=/vagrant/templates/config.hcl &> /vagrant/consul_logs/template_$HOST.log &
+         -log-level=trace -consul-token=$CONSUL_TOKEN -config=/vagrant/templates/config.hcl &> /vagrant/consul_logs/template_$HOST.log &
     else
         consul-template -log-level=trace -consul-token=$CONSUL_TOKEN -config=/vagrant/templates/config.hcl &> /vagrant/consul_logs/template_$HOST.log & 
     fi
